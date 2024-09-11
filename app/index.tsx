@@ -8,20 +8,13 @@ import { v4 as uuidv4 } from 'uuid';
 export default function Index() {
   const [textInput, setTextInput] = useState('')
   const [todoItems, setTodoItems] = useState <TodoItem[]>([])
-
-  interface TodoItem {
-    text: string | null;
-    id: string | null;
-    status: string | null
-    // Other properties as needed
-  }
-  
+ 
   function handlePress(todoItems: Array<TodoItem>, textInput: string) {
     let todoItemsCopy = [...todoItems];
     const newTodoItem: TodoItem = {
       text: textInput,
       id: uuidv4(),
-      status: null
+      todoStatus: TodoStatus.Todo
       // Other properties as needed
     };
     todoItemsCopy.push(newTodoItem);
@@ -44,7 +37,7 @@ export default function Index() {
           }}
         >
           {todoItems && todoItems.map((todoItem) => {
-          return <TodoItem text={todoItem.text} id={todoItem.id}/>
+          return <TodoItem text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus}/>
           })}
         </ScrollView>
         <View
@@ -67,12 +60,37 @@ export default function Index() {
   );
 }
 
+interface TodoItem {
+  text: string | null;
+  id: string | null;
+  todoStatus: string | null
+  // Other properties as needed
+}
+
+enum TodoStatus {
+  Todo= "todo",
+  Completed= "completed"
+}
+
 type TodoItemProps = {
   text: string | null
   id: string | null
+  todoStatus: string | null
+
 }
 
 function TodoItem(props: TodoItemProps) {
+
+  function getStatusColor(todoStatus: string | null){
+    switch(todoStatus) {
+      case TodoStatus.Completed:
+        return "green";
+      default:
+        return "gray"
+    }
+  }
+
+
   return (
     <View
       style={{
@@ -87,8 +105,9 @@ function TodoItem(props: TodoItemProps) {
       }}
     >
       <IconButton
-        icon="checkbox-blank-circle-outline"
+        icon={props.todoStatus === TodoStatus.Completed ? "checkbox-marked-circle" : "checkbox-blank-circle-outline"}
         size={48}
+        iconColor={getStatusColor(props.todoStatus)}
       />
       <Text>
         {props.text}
