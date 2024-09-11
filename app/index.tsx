@@ -23,6 +23,19 @@ export default function Index() {
     Keyboard.dismiss()
   }
 
+  function handleDeleteTask(uuid: string, todoItems: TodoItem[], setTodoItems: Function){
+    let todoItemsCopy = [...todoItems]
+    const objectToRemove = todoItems.find(i => i.id === uuid);
+    if (objectToRemove) {
+      const indexToRemove = todoItemsCopy.indexOf(objectToRemove);
+      todoItemsCopy.splice(indexToRemove, 1);
+      console.log(`Object with ID ${uuid}  removed.`);
+      setTodoItems(todoItemsCopy)
+    } else {
+      console.log(`Object with ID ${uuid} not found.`);
+    }
+  }
+
   return (
     <PaperProvider>
       <View
@@ -37,7 +50,7 @@ export default function Index() {
           }}
         >
           {todoItems && todoItems.map((todoItem) => {
-          return <TodoItem text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus}/>
+          return <TodoItem text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus} handleDeleteTask={handleDeleteTask} setTodoItems={setTodoItems} todoItems={todoItems}/>
           })}
         </ScrollView>
         <View
@@ -76,7 +89,9 @@ type TodoItemProps = {
   text: string | null
   id: string | null
   todoStatus: string | null
-
+  handleDeleteTask: Function
+  setTodoItems: Function
+  todoItems: TodoItem[]
 }
 
 function TodoItem(props: TodoItemProps) {
@@ -89,7 +104,6 @@ function TodoItem(props: TodoItemProps) {
         return "gray"
     }
   }
-
 
   return (
     <View
@@ -115,6 +129,7 @@ function TodoItem(props: TodoItemProps) {
       <IconButton
         icon="delete"
         size={48}
+        onPress={() => props.handleDeleteTask(props.id, props.todoItems, props.setTodoItems)}
       />
     </View>
   )
