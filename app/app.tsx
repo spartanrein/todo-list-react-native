@@ -1,6 +1,6 @@
 import { ComponentProps, useState } from 'react'
-import { Text, View, SafeAreaView, ScrollView, Button, Keyboard } from "react-native";
-import { PaperProvider, IconButton, TextInput } from 'react-native-paper';
+import { Text, View, SafeAreaView, ScrollView, Keyboard } from "react-native";
+import { PaperProvider, IconButton, TextInput, Button } from 'react-native-paper';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -73,10 +73,12 @@ export default function Index() {
         </View>
         <View>
           <Button
-            title="Save"
             disabled={textInput === ""}
             onPress={() => handlePress(todoItems, textInput)}
-          />
+            mode="contained"
+            buttonColor="#1cd91c"
+          > Save 
+          </Button>
         </View>
       </View>
     </PaperProvider>
