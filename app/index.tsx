@@ -36,6 +36,16 @@ export default function Index() {
     }
   }
 
+  function handleCompleteTask(uuid: string, todoItems: TodoItem[], setTodoItems: Function){
+    let todoItemsCopy = [...todoItems]
+    const objectToChange = todoItems.find(i => i.id === uuid);
+    if (objectToChange) {
+      const indexToChange = todoItemsCopy.indexOf(objectToChange);
+      todoItemsCopy[indexToChange].todoStatus = TodoStatus.Completed
+      setTodoItems(todoItemsCopy)
+    }
+  }
+
   return (
     <PaperProvider>
       <View
@@ -50,7 +60,7 @@ export default function Index() {
           }}
         >
           {todoItems && todoItems.map((todoItem) => {
-          return <TodoItem text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus} handleDeleteTask={handleDeleteTask} setTodoItems={setTodoItems} todoItems={todoItems}/>
+          return <TodoItem key={todoItem.id} text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus} handleDeleteTask={handleDeleteTask} setTodoItems={setTodoItems} todoItems={todoItems} handleCompleteTask={handleCompleteTask}/>
           })}
         </ScrollView>
         <View
@@ -92,6 +102,7 @@ type TodoItemProps = {
   handleDeleteTask: Function
   setTodoItems: Function
   todoItems: TodoItem[]
+  handleCompleteTask: Function
 }
 
 function TodoItem(props: TodoItemProps) {
@@ -120,15 +131,16 @@ function TodoItem(props: TodoItemProps) {
     >
       <IconButton
         icon={props.todoStatus === TodoStatus.Completed ? "checkbox-marked-circle" : "checkbox-blank-circle-outline"}
-        size={48}
+        size={24}
         iconColor={getStatusColor(props.todoStatus)}
+        onPress={() => props.handleCompleteTask(props.id, props.todoItems, props.setTodoItems)}
       />
       <Text>
         {props.text}
       </Text>
       <IconButton
         icon="delete"
-        size={48}
+        size={24}
         onPress={() => props.handleDeleteTask(props.id, props.todoItems, props.setTodoItems)}
       />
     </View>
