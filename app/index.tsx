@@ -1,5 +1,9 @@
 import { ComponentProps, useState } from 'react'
-import { Text, View, SafeAreaView, ScrollView, TextInput, Button, Keyboard } from "react-native";
+import { Text, View, SafeAreaView, ScrollView, Button, Keyboard } from "react-native";
+import { PaperProvider, IconButton, TextInput } from 'react-native-paper';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+
 
 export default function Index() {
   const [textInput, setTextInput] = useState('')
@@ -7,6 +11,8 @@ export default function Index() {
 
   interface TodoItem {
     text: string | null;
+    id: string | null;
+    status: string | null
     // Other properties as needed
   }
   
@@ -14,6 +20,8 @@ export default function Index() {
     let todoItemsCopy = [...todoItems];
     const newTodoItem: TodoItem = {
       text: textInput,
+      id: uuidv4(),
+      status: null
       // Other properties as needed
     };
     todoItemsCopy.push(newTodoItem);
@@ -23,6 +31,7 @@ export default function Index() {
   }
 
   return (
+    <PaperProvider>
       <View
         style={{
           flex: 1,
@@ -35,20 +44,13 @@ export default function Index() {
           }}
         >
           {todoItems && todoItems.map((todoItem) => {
-          return <TodoItem text={todoItem.text}/>
+          return <TodoItem text={todoItem.text} id={todoItem.id}/>
           })}
         </ScrollView>
         <View
-          style={{
-            flex:0.4,
-            paddingHorizontal:12,
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
         >
           <TextInput
+            placeholder={"What do you need to do?"}
             value={textInput}
             onChangeText={text => setTextInput(text)}
           />
@@ -58,34 +60,43 @@ export default function Index() {
             title="Save"
             disabled={textInput === ""}
             onPress={() => handlePress(todoItems, textInput)}
-
           />
         </View>
-        
       </View>
+    </PaperProvider>
   );
 }
 
 type TodoItemProps = {
   text: string | null
+  id: string | null
 }
 
 function TodoItem(props: TodoItemProps) {
   return (
     <View
       style={{
-        padding: 24,
+        flexDirection:'row',
+        padding: 12,
         marginBottom:12,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         borderWidth: 2,
         borderColor: 'grey',
         borderRadius: 12
       }}
     >
+      <IconButton
+        icon="checkbox-blank-circle-outline"
+        size={48}
+      />
       <Text>
         {props.text}
       </Text>
+      <IconButton
+        icon="delete"
+        size={48}
+      />
     </View>
   )
 }
