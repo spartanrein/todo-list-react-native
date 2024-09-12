@@ -1,14 +1,36 @@
-import { ComponentProps, useState } from 'react'
+import { ComponentProps, useState, useEffect } from 'react'
 import { Text, View, SafeAreaView, ScrollView, Button, Keyboard } from "react-native";
 import { PaperProvider, IconButton, TextInput } from 'react-native-paper';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Index() {
   const [textInput, setTextInput] = useState('')
   const [todoItems, setTodoItems] = useState <TodoItem[]>([])
  
+  async function storeData(value : Array<TodoItem>) {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('todoItems', jsonValue);
+    } catch (r) {
+      console.log(r)
+    }
+  }
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem('todoItems');
+        jsonValue != null ? console.log(JSON.parse(jsonValue)) : null
+        jsonValue != null ? setTodoItems(JSON.parse(jsonValue)) : null;
+      } catch (e) {
+        console.log(e)
+      }
+    };
+    getData()
+  },[])
+
   function handlePress(todoItems: Array<TodoItem>, textInput: string) {
     let todoItemsCopy = [...todoItems];
     const newTodoItem: TodoItem = {
@@ -21,6 +43,7 @@ export default function Index() {
     setTodoItems(todoItemsCopy);
     setTextInput("")
     Keyboard.dismiss()
+    storeData(todoItemsCopy)
   }
 
   function handleDeleteTask(uuid: string, todoItems: TodoItem[], setTodoItems: Function){
