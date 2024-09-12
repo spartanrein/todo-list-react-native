@@ -54,6 +54,7 @@ export default function Index() {
       todoItemsCopy.splice(indexToRemove, 1);
       console.log(`Object with ID ${uuid}  removed.`);
       setTodoItems(todoItemsCopy)
+      storeData(todoItemsCopy)
     } else {
       console.log(`Object with ID ${uuid} not found.`);
     }
