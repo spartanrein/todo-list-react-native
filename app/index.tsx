@@ -86,15 +86,14 @@ export default function Index() {
           {todoItems && todoItems.map((todoItem) => {
           return <TodoItem key={todoItem.id} text={todoItem.text} id={todoItem.id} todoStatus={todoItem.todoStatus} handleDeleteTask={handleDeleteTask} setTodoItems={setTodoItems} todoItems={todoItems} handleCompleteTask={handleCompleteTask}/>
           })}
-        </ScrollView>
-        <View
-        >
-          <TextInput
-            placeholder={"What do you need to do?"}
-            value={textInput}
-            onChangeText={text => setTextInput(text)}
-          />
+          <View>
+            <TextInput
+              placeholder={"What do you need to do?"}
+              value={textInput}
+              onChangeText={text => setTextInput(text)}
+            />
         </View>
+        </ScrollView>
         <View>
           <Button
             title="Save"
